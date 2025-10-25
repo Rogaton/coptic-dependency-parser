@@ -316,19 +316,7 @@ All dependencies retain their original permissive licenses:
 - **Gradio** - Apache License 2.0
 - **NumPy, Pandas, Matplotlib, SciPy, Scikit-learn** - BSD 3-Clause License
 
-See the [LICENSES/](LICENSES/) directory for complete license texts.
-
-#### Why Dual License?
-
-This structure:
-- **Protects the parser** from commercial exploitation while keeping it free for research
-- **Respects dependency licenses** - they remain under their original terms
-- **Encourages academic collaboration** and open science
-- **Allows commercial licensing** by arrangement with the author
-
-For commercial use inquiries, please [open an issue](https://github.com/Rogaton/coptic-dependency-parser/issues).
-
-See [LICENSE](LICENSE) for complete details.
+See the [LICENSES/](LICENSES/) directory for complete license texts and [LICENSE](LICENSE) for complete details.
 
 ---
 
