@@ -137,6 +137,40 @@ class CopticPrologRules:
         self.prolog.assertz("invalid_punct(Word, POS, Relation) :- Relation = 'punct', member(POS, ['VERB', 'NOUN', 'PRON', 'PROPN', 'DET', 'ADJ', 'ADV', 'AUX', 'NUM'])")
 
         # ===================================================================
+        # ERROR CORRECTION RULES
+        # ===================================================================
+
+        # Suggest correct relation for DET (determiner)
+        # DET before NOUN should be 'det' relation
+        self.prolog.assertz("suggest_correction('DET', _, 'det')")
+
+        # Suggest correct relation for PRON (pronoun)
+        # PRON is typically subject (nsubj), object (obj), or possessive
+        self.prolog.assertz("suggest_correction('PRON', 'VERB', 'nsubj')")  # Pronoun before verb = subject
+        self.prolog.assertz("suggest_correction('PRON', 'AUX', 'nsubj')")   # Pronoun before aux = subject
+        self.prolog.assertz("suggest_correction('PRON', _, 'nsubj')")       # Default for pronoun
+
+        # Suggest correct relation for NOUN
+        self.prolog.assertz("suggest_correction('NOUN', 'VERB', 'obj')")    # Noun after verb = object
+        self.prolog.assertz("suggest_correction('NOUN', 'AUX', 'nsubj')")   # Noun after copula = predicate nominal
+        self.prolog.assertz("suggest_correction('NOUN', _, 'obl')")         # Default for noun
+
+        # Suggest correct relation for VERB
+        # Main verbs are often root, ccomp (complement clause), or advcl (adverbial clause)
+        self.prolog.assertz("suggest_correction('VERB', 'SCONJ', 'ccomp')") # Verb after subordinator = complement
+        self.prolog.assertz("suggest_correction('VERB', 'VERB', 'ccomp')")  # Verb after verb = complement
+        self.prolog.assertz("suggest_correction('VERB', _, 'root')")        # Default for verb
+
+        # Suggest correct relation for AUX (auxiliary/copula)
+        self.prolog.assertz("suggest_correction('AUX', _, 'cop')")          # Copula relation
+
+        # Suggest correct relation for ADJ (adjective)
+        self.prolog.assertz("suggest_correction('ADJ', 'NOUN', 'amod')")    # Adjective modifying noun
+
+        # Suggest correct relation for ADV (adverb)
+        self.prolog.assertz("suggest_correction('ADV', _, 'advmod')")       # Adverbial modifier
+
+        # ===================================================================
         # MORPHOLOGICAL ANALYSIS RULES
         # ===================================================================
 
@@ -193,13 +227,30 @@ class CopticPrologRules:
                         f"Unusual det-noun: {dep_word} → {head_word}"
                     )
 
-            # Check for incorrect punctuation assignments
+            # Check for incorrect punctuation assignments and suggest corrections
             query = f"invalid_punct('{dep_word}', '{dep_pos}', '{relation}')"
             query_result = list(self.prolog.query(query))
             if query_result:
-                result["warnings"].append(
-                    f"⚠️  PARSER ERROR: '{dep_word}' ({dep_pos}) incorrectly labeled as 'punct' - should be a content relation"
-                )
+                # Query for suggested correction
+                correction_query = f"suggest_correction('{dep_pos}', '{head_pos}', Suggestion)"
+                correction_result = list(self.prolog.query(correction_query))
+
+                if correction_result and 'Suggestion' in correction_result[0]:
+                    suggested_rel = correction_result[0]['Suggestion']
+                    result["warnings"].append(
+                        f"⚠️  PARSER ERROR: '{dep_word}' ({dep_pos}) incorrectly labeled as 'punct' → SUGGESTED: '{suggested_rel}'"
+                    )
+                    result["suggestions"].append({
+                        "word": dep_word,
+                        "pos": dep_pos,
+                        "incorrect": relation,
+                        "suggested": suggested_rel,
+                        "head_pos": head_pos
+                    })
+                else:
+                    result["warnings"].append(
+                        f"⚠️  PARSER ERROR: '{dep_word}' ({dep_pos}) incorrectly labeled as 'punct' - should be a content relation"
+                    )
 
             return result
 
