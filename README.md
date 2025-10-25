@@ -2,7 +2,7 @@
 
 Neural dependency parser for Coptic text with tokenization, POS tagging, lemmatization, and dependency analysis.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![Stanza](https://img.shields.io/badge/Stanza-NLP-green.svg)](https://stanfordnlp.github.io/stanza/)
 
@@ -289,11 +289,46 @@ If you use this parser in academic research, please cite:
 
 ## License
 
-**Apache License 2.0**
+### Dual License Structure
 
-This project is open source under the Apache License 2.0. All dependencies (Stanza, DiaParser, PyTorch) are under permissive open source licenses.
+This project uses a **dual licensing model**:
 
-See [LICENSE](LICENSE) for full details.
+#### 1. Original Work - CC BY-NC-SA 4.0 (Non-Commercial)
+
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+**All original code, documentation, GUI, and project-specific files created by Rogaton are licensed under:**
+
+**Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**
+
+This means:
+- ✅ **Free for academic research, education, and personal use**
+- ✅ Share, adapt, and build upon the work
+- ✅ Must give attribution and share adaptations under the same license
+- ❌ **No commercial use without permission**
+
+#### 2. Third-Party Dependencies
+
+All dependencies retain their original permissive licenses:
+- **Stanford Stanza** - Apache License 2.0
+- **DiaParser** - Apache License 2.0
+- **PyTorch** - BSD 3-Clause License
+- **Gradio** - Apache License 2.0
+- **NumPy, Pandas, Matplotlib, SciPy, Scikit-learn** - BSD 3-Clause License
+
+See the [LICENSES/](LICENSES/) directory for complete license texts.
+
+#### Why Dual License?
+
+This structure:
+- **Protects the parser** from commercial exploitation while keeping it free for research
+- **Respects dependency licenses** - they remain under their original terms
+- **Encourages academic collaboration** and open science
+- **Allows commercial licensing** by arrangement with the author
+
+For commercial use inquiries, please [open an issue](https://github.com/Rogaton/coptic-dependency-parser/issues).
+
+See [LICENSE](LICENSE) for complete details.
 
 ---
 
