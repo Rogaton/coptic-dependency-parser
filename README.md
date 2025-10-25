@@ -1,128 +1,251 @@
----
-title: Coptic Dependency Parser
-emoji: 📜
-colorFrom: blue
-colorTo: purple
-sdk: gradio
-sdk_version: 4.0.0
-app_file: app.py
-pinned: false
-license: apache-2.0
-tags:
-  - coptic
-  - dependency-parsing
-  - nlp
-  - ancient-languages
-  - digital-humanities
-  - stanza
-  - coptic-scriptorium
-  - linguistics
-  - pos-tagging
-  - lemmatization
-language:
-  - cop
----
-
 # Coptic Dependency Parser
 
-Neural dependency parser for Coptic text with part-of-speech tagging and lemmatization.
+Neural dependency parser for Coptic text with tokenization, POS tagging, lemmatization, and dependency analysis.
 
-Try it directly in your browser - no installation required!
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Stanza](https://img.shields.io/badge/Stanza-NLP-green.svg)](https://stanfordnlp.github.io/stanza/)
 
-## What This Demo Does
+> **Try it online:** [Coptic Parser Web Demo](https://huggingface.co/spaces/Rogaton/coptic-dependency-parser) (no installation required)
 
-This parser performs comprehensive linguistic analysis of Coptic text:
+---
 
-- **Tokenization**: Splits text into sentences and individual words
-- **POS Tagging**: Identifies parts of speech (NOUN, VERB, DET, etc.) using Universal Dependencies tagset
-- **Lemmatization**: Finds dictionary/base forms of words
-- **Dependency Parsing**: Analyzes grammatical relationships between words (subject, object, modifier, etc.)
+## Overview
 
-## How to Use
+This parser provides comprehensive linguistic analysis of Coptic texts using state-of-the-art neural NLP models:
 
-1. Enter Coptic text in the input box (single or multiple sentences)
-2. Click "Parse Text" or press Enter
-3. View results in two formats:
-   - **Dependency Table**: Visual table with all linguistic annotations
-   - **Text Output**: Detailed text listing of all relationships
+- **Tokenization**: Sentence and word segmentation
+- **POS Tagging**: Universal Dependencies tagset (NOUN, VERB, DET, etc.)
+- **Lemmatization**: Dictionary/base forms of words
+- **Dependency Parsing**: Grammatical relationships (subject, object, modifier, etc.)
+- **Visualization**: Interactive dependency trees and tables
 
-## Example Input
+Perfect for Coptic language students, digital humanities researchers, linguists, and corpus analysts.
 
+---
+
+## Features
+
+✨ **Full NLP Pipeline**
+- Trained on [Coptic SCRIPTORIUM](https://copticscriptorium.org/) corpus
+- Neural dependency parser with biaffine attention ([DiaParser](https://github.com/Unipisa/diaparser))
+- Integrated with [Stanford Stanza](https://stanfordnlp.github.io/stanza/) framework
+
+🖥️ **Two Interfaces**
+- **GUI Application**: Desktop app with dependency graph visualization
+- **Command Line**: Scriptable batch processing
+
+📊 **Output Formats**
+- Interactive tables
+- Dependency tree graphs
+- CoNLL-U format
+- Plain text analysis
+
+---
+
+## Installation
+
+### Prerequisites
+
+- **Python 3.9 or higher**
+- **pip** (Python package manager)
+- **virtualenv** (recommended)
+
+### Step-by-Step Installation
+
+1. **Clone the repository:**
+
+```bash
+git clone https://github.com/Rogaton/coptic-dependency-parser.git
+cd coptic-dependency-parser
+```
+
+2. **Create a virtual environment:**
+
+```bash
+python3 -m venv .venv
+```
+
+3. **Activate the virtual environment:**
+
+```bash
+# On Linux/macOS:
+source .venv/bin/activate
+
+# On Windows:
+.venv\Scripts\activate
+```
+
+4. **Install dependencies:**
+
+```bash
+pip install -r requirements.txt
+```
+
+5. **Download Coptic models:**
+
+```bash
+python3 -c "import stanza; stanza.download('cop')"
+```
+
+This will download the Stanza Coptic language models (~100MB).
+
+---
+
+## Quick Start
+
+### GUI Application
+
+Launch the full graphical interface with dependency visualization:
+
+```bash
+python3 coptic-parser.py
+```
+
+Features:
+- Input Coptic text via virtual keyboard or paste
+- View results in interactive table
+- Generate dependency tree graphs
+- Navigate between sentences
+- Export results
+
+### Simple GUI (Tokenization & POS Only)
+
+For faster tokenization and POS tagging without full dependency parsing:
+
+```bash
+python3 coptic-parser-simple-wrapper.py
+```
+
+### Web Demo
+
+For quick testing without installation, use the online demo:
+
+🔗 **[Try the Hugging Face Space](https://huggingface.co/spaces/Rogaton/coptic-dependency-parser)**
+
+---
+
+## Usage Examples
+
+### Example 1: Parse a Simple Sentence
+
+**Input:**
 ```
 ⲁⲛⲟⲕ ⲡⲉ ⲡⲛⲟⲩⲧⲉ
 ```
 (Translation: "I am God")
 
-The parser will show you:
-- Each word's part of speech
-- Its lemma (dictionary form)
-- Which word it depends on
-- The grammatical relationship
+**Output:**
+```
+ID   FORM     LEMMA    UPOS   HEAD   DEPREL
+1    ⲁⲛⲟⲕ    ⲁⲛⲟⲕ    PRON   2      nsubj
+2    ⲡⲉ      ⲡⲉ      AUX    0      root
+3    ⲡⲛⲟⲩⲧⲉ  ⲛⲟⲩⲧⲉ   NOUN   2      nsubj
+```
 
-## Technical Details
+### Example 2: Analyze Multiple Sentences
 
-### Models and Training
+Paste or type multiple sentences - the parser automatically handles sentence boundaries.
 
-- **Base Framework**: [Stanford Stanza](https://stanfordnlp.github.io/stanza/) for Coptic NLP
-- **Parser**: [DiaParser](https://github.com/Unipisa/diaparser) with biaffine attention mechanism
-- **Training Data**: [Coptic SCRIPTORIUM](https://copticscriptorium.org/) corpus
-- **Training Hardware**: CPU-only (Intel, 64GB RAM)
-- **Training Time**: 12 hours on complete Coptic SCRIPTORIUM dataset
-- **Architecture**: Neural dependency parser with BiLSTM + biaffine attention
+### Example 3: Export Results
 
-### Performance
+Results can be:
+- Copied from the output window
+- Saved as text files
+- Exported in CoNLL-U format for further analysis
 
-**Real-world benchmarks**:
-- **Desktop (local)**: Instant parsing for typical texts
-- **Web demo (HF CPU)**: 67 sentences, 1,337 words in < 7 seconds (~190 words/second)
-- Handles single and multi-sentence texts efficiently
-- Processes long documents (tested up to 67+ sentences)
-- Follows Universal Dependencies annotation standards
-- Trained on authentic Coptic texts from diverse genres
+---
 
-## Built On Open Source
+## Documentation
 
-This parser integrates several excellent open source projects:
+- **[Quick Start Guide](QUICK_START.md)**: Fast setup and common workflows
+- **[Troubleshooting](TROUBLESHOOTING.md)**: Solutions to common issues
+- **[Contributing](CONTRIBUTING.md)**: How to contribute to the project
+- **[Credits & Attribution](CREDITS_AND_ATTRIBUTION.md)**: Acknowledgments and citations
 
-### Primary Components
+---
 
-- **[Coptic SCRIPTORIUM](https://copticscriptorium.org/)**: Training corpus and linguistic annotations
-  - Zeldes, A. & Schroeder, C. T. (2016). "Coptic SCRIPTORIUM: Digital Resources for the Study of Coptic Literature"
-- **[Stanford Stanza](https://stanfordnlp.github.io/stanza/)**: NLP pipeline framework
-  - Qi, P., Zhang, Y., Zhang, Y., Bolton, J., & Manning, C. D. (2020). "Stanza: A Python Natural Language Processing Toolkit for Many Human Languages"
-- **[DiaParser](https://github.com/Unipisa/diaparser)**: Neural dependency parser
-  - Attardi, G. et al. (2021). "DiaParser: A Fast and Accurate Dependency Parser"
+## Performance
+
+### Model Details
+
+- **Framework**: Stanford Stanza + DiaParser
+- **Architecture**: BiLSTM with biaffine attention
+- **Training Data**: Coptic SCRIPTORIUM Universal Dependencies corpus
+- **Training Time**: ~12 hours on CPU (Intel, 64GB RAM)
+
+### Speed Benchmarks
+
+- **Desktop**: Near-instant parsing for typical texts
+- **Web demo (CPU)**: ~190 words/second
+- **Batch processing**: Efficient for large corpora
+
+---
+
+## Technical Architecture
+
+```
+Input Text
+    ↓
+┌─────────────────┐
+│  Stanza Pipeline │
+│  - Tokenization  │
+│  - POS Tagging   │
+│  - Lemmatization │
+└────────┬─────────┘
+         ↓
+┌─────────────────┐
+│   DiaParser      │
+│  - Biaffine Dep. │
+│  - Graph Builder │
+└────────┬─────────┘
+         ↓
+┌─────────────────┐
+│  Visualization   │
+│  - Tables        │
+│  - Graphs        │
+│  - CoNLL-U       │
+└─────────────────┘
+```
+
+---
+
+## Training Your Own Models
+
+The repository includes training data in the `data/` directory:
+
+- **Tokenization**: `data/tokenize/`
+- **Dependency parsing**: `data/depparse/`
+
+See the Stanza and DiaParser documentation for training instructions.
+
+---
+
+## Built With
+
+### Core Dependencies
+
+- **[Coptic SCRIPTORIUM](https://copticscriptorium.org/)** - Training corpus and annotations
+- **[Stanford Stanza](https://stanfordnlp.github.io/stanza/)** - NLP pipeline framework
+- **[DiaParser](https://github.com/Unipisa/diaparser)** - Neural dependency parser
+- **[PyTorch](https://pytorch.org/)** - Deep learning backend
 
 ### Supporting Libraries
 
-- PyTorch: Deep learning framework
-- Gradio: Web interface
-- NumPy, Pandas: Data processing
-- Matplotlib: Visualization
+- **tkinter** - Desktop GUI
+- **matplotlib** - Graph visualization
+- **pandas** - Data processing
+- **numpy** - Numerical computing
 
-## Use Cases
-
-Perfect for:
-
-- **Coptic Language Students**: Learn grammatical structure through visualization
-- **Digital Humanities Researchers**: Analyze Coptic texts computationally
-- **Linguists**: Study syntactic patterns in ancient Coptic
-- **Corpus Linguists**: Extract dependency statistics from texts
-- **NLP Researchers**: Experiment with low-resource language parsing
-
-## Limitations
-
-- Trained specifically on Coptic - not suitable for other languages
-- Quality depends on training data coverage
-- May struggle with very rare constructions or non-standard orthography
-- Best performance on texts similar to Coptic SCRIPTORIUM corpus genres
+---
 
 ## Citation
 
 If you use this parser in academic research, please cite:
 
 ### This Tool
-```
+
+```bibtex
 @software{coptic_dependency_parser_2024,
   title={Coptic Dependency Parser},
   author={Rogaton},
@@ -134,7 +257,7 @@ If you use this parser in academic research, please cite:
 ### Foundational Resources
 
 **Coptic SCRIPTORIUM:**
-```
+```bibtex
 @article{zeldes2016coptic,
   title={Coptic SCRIPTORIUM: Digital Resources for the Study of Coptic Literature},
   author={Zeldes, Amir and Schroeder, Caroline T.},
@@ -144,7 +267,7 @@ If you use this parser in academic research, please cite:
 ```
 
 **Stanford Stanza:**
-```
+```bibtex
 @inproceedings{qi2020stanza,
   title={Stanza: A {Python} Natural Language Processing Toolkit for Many Human Languages},
   author={Qi, Peng and Zhang, Yuhao and Zhang, Yuhui and Bolton, Jason and Manning, Christopher D.},
@@ -153,24 +276,95 @@ If you use this parser in academic research, please cite:
 }
 ```
 
+**DiaParser:**
+```bibtex
+@inproceedings{attardi2021diaparser,
+  title={DiaParser: A Fast and Accurate Dependency Parser},
+  author={Attardi, Giuseppe and others},
+  year={2021}
+}
+```
+
+---
+
 ## License
 
 **Apache License 2.0**
 
-This project is licensed under the Apache License 2.0, which allows free use, modification, and distribution. All dependencies (Stanza, DiaParser, PyTorch, Gradio) are under permissive open source licenses. See [LICENSE](https://github.com/Rogaton/coptic-dependency-parser/blob/main/LICENSE) for details.
+This project is open source under the Apache License 2.0. All dependencies (Stanza, DiaParser, PyTorch) are under permissive open source licenses.
 
-## Links
-
-- **Full Application** (desktop GUI with visualization): [GitHub Repository](https://github.com/Rogaton/coptic-dependency-parser)
-- **Documentation**: Comprehensive guides available in GitHub repo
-- **Issues/Questions**: [GitHub Issues](https://github.com/Rogaton/coptic-dependency-parser/issues)
-
-## About the Developer
-
-This parser was developed as an open source contribution to Coptic digital humanities, making neural NLP tools accessible to researchers and students without requiring extensive computational resources or programming expertise.
-
-Trained on consumer hardware (CPU-only MiniPC) to demonstrate that advanced NLP is now accessible to individual researchers with modest resources.
+See [LICENSE](LICENSE) for full details.
 
 ---
 
-**Try it now!** Enter your Coptic text above and explore the grammatical structure. ⬆️
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- How to report bugs
+- How to suggest features
+- Code contribution guidelines
+- Testing procedures
+
+---
+
+## Support
+
+### Get Help
+
+- **Issues**: [GitHub Issues](https://github.com/Rogaton/coptic-dependency-parser/issues)
+- **Questions**: Use the "question" issue template
+- **Bugs**: Use the "bug report" template
+- **Features**: Use the "feature request" template
+
+### Known Limitations
+
+- Trained specifically on Coptic - not suitable for other languages
+- Quality depends on training data coverage
+- May struggle with rare constructions or non-standard orthography
+- Best performance on texts similar to SCRIPTORIUM corpus
+
+---
+
+## Acknowledgments
+
+This parser was developed as an open source contribution to Coptic digital humanities, making neural NLP accessible to researchers and students.
+
+Trained on consumer hardware (CPU-only) to demonstrate that advanced NLP is now accessible to individual researchers with modest resources.
+
+Special thanks to:
+- The Coptic SCRIPTORIUM team for corpus development
+- Stanford NLP Group for Stanza framework
+- University of Pisa for DiaParser
+- The Coptic studies community
+
+---
+
+## Project Status
+
+**Active Development** - Regular updates and maintenance
+
+Latest release: Version 1.1 (2024)
+
+See [SUMMARY_VERSION_1.1.md](SUMMARY_VERSION_1.1.md) for recent changes.
+
+---
+
+## Related Projects
+
+- **[Coptic SCRIPTORIUM](https://copticscriptorium.org/)** - Coptic corpus and tools
+- **[Stanford Stanza](https://stanfordnlp.github.io/stanza/)** - Multi-language NLP toolkit
+- **[Universal Dependencies](https://universaldependencies.org/)** - Annotation standards
+
+---
+
+**Start parsing Coptic texts today!** 🎯
+
+```bash
+git clone https://github.com/Rogaton/coptic-dependency-parser.git
+cd coptic-dependency-parser
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python3 -c "import stanza; stanza.download('cop')"
+python3 coptic-parser.py
+```
