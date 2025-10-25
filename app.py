@@ -68,11 +68,12 @@ Sentence.__getattr__ = patched_sentence_getattr
 # Global variables for models
 nlp = None
 diaparser = None
+prolog = None
 
 
 def load_models():
-    """Load Stanza and DiaParser models"""
-    global nlp, diaparser
+    """Load Stanza, DiaParser, and Prolog models"""
+    global nlp, diaparser, prolog
 
     if nlp is None:
         print("Loading Stanza Coptic model...")
@@ -93,6 +94,16 @@ def load_models():
         print("Loading DiaParser model...")
         diaparser = Parser.load('cop.diaparser')
         print("✓ DiaParser loaded")
+
+    if prolog is None:
+        try:
+            print("Loading Prolog rule engine...")
+            from coptic_prolog_rules import create_prolog_engine
+            prolog = create_prolog_engine()
+            print("✓ Prolog loaded")
+        except Exception as e:
+            print(f"⚠️  Prolog not available: {e}")
+            prolog = None
 
 
 def parse_coptic_text(text):
@@ -166,6 +177,26 @@ def parse_coptic_text(text):
                 text_output_lines.append(
                     f"     POS: {pos:10} Lemma: {lemma}"
                 )
+
+            # Prolog validation (if available)
+            if prolog and prolog.prolog_initialized:
+                heads = [word_data['head'] for word_data in sentence_words]
+                deprels = [word_data['deprel'] for word_data in sentence_words]
+
+                validation = prolog.validate_parse_tree(tokens, pos_tags, heads, deprels)
+
+                # Check for tripartite pattern
+                if validation.get("patterns_found"):
+                    for pattern in validation["patterns_found"]:
+                        if pattern.get("is_tripartite"):
+                            text_output_lines.append(f"\n✓ Prolog: {pattern['description']} detected")
+                            text_output_lines.append(f"  Pattern: {pattern['pattern']}")
+
+                # Show warnings if any
+                if validation.get("warnings"):
+                    text_output_lines.append(f"\n⚠ Prolog Warnings:")
+                    for warning in validation["warnings"]:
+                        text_output_lines.append(f"  - {warning}")
 
             all_results.append({
                 'sentence_id': sent_idx,
@@ -340,12 +371,19 @@ with gr.Blocks(title="Coptic Dependency Parser", theme=gr.themes.Soft()) as demo
     gr.Markdown("""
     # Coptic Dependency Parser
 
-    Neural dependency parser for Coptic text with POS tagging and lemmatization.
+    Neural-symbolic dependency parser for Coptic text with POS tagging, lemmatization, and grammatical validation.
 
     **Built on:**
     - [Coptic SCRIPTORIUM](https://copticscriptorium.org/) training data
     - [Stanford Stanza](https://stanfordnlp.github.io/stanza/) NLP framework
     - [DiaParser](https://github.com/Unipisa/diaparser) biaffine parser
+    - **Prolog rule engine** for Coptic grammatical validation
+
+    **Features:**
+    - ✓ Neural dependency parsing
+    - ✓ Tripartite sentence pattern detection
+    - ✓ Morphological analysis (article stripping)
+    - ✓ Grammatical validation with Prolog rules
 
     **Usage:** Enter Coptic text below and click "Parse" to see dependency analysis.
     """)
@@ -386,6 +424,7 @@ with gr.Blocks(title="Coptic Dependency Parser", theme=gr.themes.Soft()) as demo
     - **POS Tagging**: Identifies parts of speech (NOUN, VERB, etc.)
     - **Lemmatization**: Finds dictionary forms of words
     - **Dependency Parsing**: Analyzes grammatical relationships
+    - **Grammatical Validation**: Detects Coptic linguistic patterns (tripartite sentences, etc.)
 
     ### Citation
 

@@ -47,6 +47,31 @@ from pathlib import Path
 import signal
 import sys
 
+# Fix PyTorch 2.6+ compatibility and __getitems__ error
+import torch
+import pickle
+
+# Store original torch.load
+_original_torch_load = torch.load
+
+def patched_torch_load(*args, **kwargs):
+    """Patched torch.load with multiple compatibility fixes"""
+    # Set weights_only=False for older models
+    kwargs['weights_only'] = False
+
+    try:
+        return _original_torch_load(*args, **kwargs)
+    except (KeyError, AttributeError) as e:
+        if '__getitems__' in str(e) or '__getitem__' in str(e):
+            # Try with pickle protocol 4
+            print(f"Retrying model load with pickle protocol 4...")
+            kwargs['pickle_module'] = pickle
+            return _original_torch_load(*args, **kwargs)
+        raise
+
+# Apply the patch
+torch.load = patched_torch_load
+
 # Set matplotlib to use fonts that support Coptic Unicode
 plt.rcParams['font.family'] = ['Noto Sans Coptic', 'DejaVu Sans', 'sans-serif']
 
@@ -59,7 +84,15 @@ class CopticParserGUI:
         self.nlp = None
         self.current_doc = None
         self.current_sentence_idx = 0  # For navigating between sentences in graph view
-        
+
+        # Initialize Prolog engine for grammatical validation
+        try:
+            from coptic_prolog_rules import create_prolog_engine
+            self.prolog = create_prolog_engine()
+        except Exception as e:
+            print(f"Warning: Prolog integration not available: {e}")
+            self.prolog = None
+
         # Coptic alphabet
         self.coptic_chars = [
             'ⲁ', 'ⲃ', 'ⲅ', 'ⲇ', 'ⲉ', 'ⲍ', 'ⲏ', 'ⲑ', 'ⲓ', 'ⲕ',
@@ -457,17 +490,41 @@ Exports parsed results as a formatted HTML table for:
 
         # Load diaparser for dependency parsing
         if not hasattr(self, 'diaparser'):
-            import torch
             import sys
             sys.path.insert(0, '/home/aldn/NLP/coptic-nlp')
 
-            # Fix for PyTorch 2.6+ compatibility - monkey-patch torch.load to use weights_only=False
-            if not hasattr(self, '_torch_patched'):
-                original_load = torch.load
-                torch.load = lambda *args, **kwargs: original_load(*args, **{**kwargs, 'weights_only': False})
-                self._torch_patched = True
+            # The torch patch was already applied at module level (lines 50-73)
 
             from diaparser.parsers.parser import Parser
+
+            # Fix DiaParser __getitems__ compatibility issue with PyTorch DataLoader
+            if not hasattr(self, '_diaparser_patched'):
+                from diaparser.utils.data import Dataset
+                from diaparser.utils.transform import Sentence
+
+                # Patch Dataset to handle __getitems__ check
+                original_dataset_getattr = Dataset.__getattr__
+
+                def patched_dataset_getattr(self_inner, name):
+                    """Patched __getattr__ to handle PyTorch DataLoader checks"""
+                    if name in ('__getitems__', '__getitem__', '_is_protocol'):
+                        raise AttributeError(f"'{type(self_inner).__name__}' object has no attribute '{name}'")
+                    return original_dataset_getattr(self_inner, name)
+
+                Dataset.__getattr__ = patched_dataset_getattr
+
+                # Patch Sentence to handle __getitems__ check
+                original_sentence_getattr = Sentence.__getattr__
+
+                def patched_sentence_getattr(self_inner, name):
+                    """Patched __getattr__ to handle PyTorch DataLoader checks"""
+                    if name in ('__getitems__', '__getitem__', '_is_protocol'):
+                        raise AttributeError(f"'{type(self_inner).__name__}' object has no attribute '{name}'")
+                    return original_sentence_getattr(self_inner, name)
+
+                Sentence.__getattr__ = patched_sentence_getattr
+                self._diaparser_patched = True
+
             self.diaparser = Parser.load('/home/aldn/NLP/coptic-nlp/lib/cop.diaparser')
     
     def parse_text(self):
@@ -555,6 +612,23 @@ Exports parsed results as a formatted HTML table for:
                     all_results.append(f"  {word.text:15} ({word.upos:6}) --{word.deprel:10}--> {head_text:15}")
 
                 all_results.append(f"\nTokens in sentence: {len(words)}")
+
+                # Prolog validation (if available)
+                if self.prolog and self.prolog.prolog_initialized:
+                    validation = self.prolog.validate_parse_tree(tokens, pos_tags, heads, deprels)
+
+                    # Check for tripartite pattern
+                    if validation.get("patterns_found"):
+                        for pattern in validation["patterns_found"]:
+                            if pattern.get("is_tripartite"):
+                                all_results.append(f"\n✓ Prolog: {pattern['description']} detected")
+                                all_results.append(f"  Pattern: {pattern['pattern']}")
+
+                    # Show warnings if any
+                    if validation.get("warnings"):
+                        all_results.append(f"\n⚠ Prolog Warnings:")
+                        for warning in validation["warnings"]:
+                            all_results.append(f"  - {warning}")
 
             # Create doc object with all sentences
             doc = type('Doc', (), {
