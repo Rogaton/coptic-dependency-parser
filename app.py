@@ -213,7 +213,15 @@ def parse_coptic_text(text):
         # Status message
         num_sentences = len(doc_tok.sentences)
         num_words = sum(len(sent.words) for sent in doc_tok.sentences)
-        status = f"✓ Parsed {num_sentences} sentence(s) with {num_words} words"
+
+        # Add Prolog status
+        prolog_status = ""
+        if prolog and prolog.prolog_initialized:
+            prolog_status = " | ✓ Prolog validation active"
+        else:
+            prolog_status = " | ⚠️ Prolog validation unavailable"
+
+        status = f"✓ Parsed {num_sentences} sentence(s) with {num_words} words{prolog_status}"
 
         return text_output, html_table, status
 
