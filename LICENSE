@@ -1,37 +1,33 @@
+Coptic Dependency Parser
+Copyright (c) 2024 Rogaton
+
 ================================================================================
-COPTIC DEPENDENCY PARSER - DUAL LICENSE
+DUAL LICENSE NOTICE
 ================================================================================
 
 This project uses a dual licensing structure:
 
-1. ORIGINAL WORK by Rogaton (2024)
-   - License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
-   - Applies to: All original code, documentation, GUI, trained models, and
-                 project-specific files created by the author
+1. ORIGINAL WORK by Rogaton
+   Licensed under: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+   International (CC BY-NC-SA 4.0)
 
 2. THIRD-PARTY DEPENDENCIES
-   - Remain under their respective original licenses (Apache 2.0, MIT, BSD, etc.)
-   - See LICENSES/ directory for full details
+   Retain their respective original licenses (Apache 2.0, MIT, BSD, etc.)
+   See LICENSES/ directory for details
 
 ================================================================================
-ORIGINAL WORK LICENSE
+CC BY-NC-SA 4.0 LICENSE
 ================================================================================
 
-Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
-
-Copyright (c) 2024 Rogaton
-
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike
-4.0 International License.
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 
 You are free to:
   - Share: copy and redistribute the material in any medium or format
   - Adapt: remix, transform, and build upon the material
 
 Under the following terms:
-  - Attribution: You must give appropriate credit, provide a link to the license,
-    and indicate if changes were made. You may do so in any reasonable manner,
-    but not in any way that suggests the licensor endorses you or your use.
+  - Attribution: You must give appropriate credit, provide a link to the
+    license, and indicate if changes were made.
 
   - NonCommercial: You may not use the material for commercial purposes.
 
@@ -39,90 +35,35 @@ Under the following terms:
     distribute your contributions under the same license as the original.
 
   - No additional restrictions: You may not apply legal terms or technological
-    measures that legally restrict others from doing anything the license permits.
+    measures that legally restrict others from doing anything the license
+    permits.
 
-Full license text: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-
-================================================================================
-WHAT IS COVERED BY THE NON-COMMERCIAL LICENSE
-================================================================================
-
-The CC BY-NC-SA 4.0 license applies to:
-
-✓ Python source code files:
-  - coptic-parser.py
-  - coptic-parser-simple-wrapper.py
-  - app.py (Gradio interface)
-  - Any custom scripts in scripts/ directory
-
-✓ Documentation:
-  - README.md
-  - QUICK_START.md
-  - TROUBLESHOOTING.md
-  - CONTRIBUTING.md
-  - CREDITS_AND_ATTRIBUTION.md
-  - All markdown documentation files
-
-✓ GUI and Interface:
-  - Tkinter GUI implementation
-  - Gradio web interface design
-  - Virtual keyboard implementation
-  - Visualization code
-
-✓ Training configurations and project-specific models:
-  - Model training scripts
-  - Configuration files specific to this project
-
-✓ GitHub workflows and project configuration:
-  - .github/ directory contents
-  - Issue templates
-  - Pull request templates
+For the complete legal text, see:
+https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 
 ================================================================================
-WHAT IS NOT COVERED (THIRD-PARTY DEPENDENCIES)
+WHAT THIS MEANS
 ================================================================================
 
-The following components retain their ORIGINAL LICENSES and are NOT subject
-to the CC BY-NC-SA 4.0 restrictions:
+PERMITTED USES (Non-Commercial):
+  ✓ Academic research and publication
+  ✓ Educational purposes
+  ✓ Personal projects
+  ✓ Non-profit organization use
+  ✓ Open source contributions
 
-Third-party libraries (see LICENSES/ directory for full license texts):
-  - Stanford Stanza (Apache 2.0)
-  - DiaParser (Apache 2.0)
-  - PyTorch (BSD-3-Clause)
-  - Gradio (Apache 2.0)
-  - NumPy, Pandas, Matplotlib (BSD-3-Clause)
-  - Other Python dependencies listed in requirements.txt
+PROHIBITED USES:
+  ✗ Commercial products or services
+  ✗ Incorporation into proprietary software for sale
 
-Training data:
-  - Coptic SCRIPTORIUM corpus (see data/ directory for specific licensing)
-  - Universal Dependencies treebanks (various Creative Commons licenses)
-
-================================================================================
-COMMERCIAL USE PROHIBITION
-================================================================================
-
-PROHIBITED COMMERCIAL USES include but are not limited to:
-
-✗ Selling this parser or derivative works as a product or service
-✗ Using this parser in a commercial SaaS or API product
-✗ Incorporating this parser into proprietary commercial software
-✗ Using this parser for commercial NLP consulting services
-✗ Training commercial models using the code or architecture from this project
-
-PERMITTED NON-COMMERCIAL USES include:
-
-✓ Academic research and publication
-✓ Educational purposes (teaching, learning)
-✓ Personal projects and hobbyist use
-✓ Non-profit organization use
-✓ Open source contributions
-✓ Evaluation and testing for research purposes
+For commercial licensing inquiries, please contact via:
+https://github.com/Rogaton/coptic-dependency-parser/issues
 
 ================================================================================
-ACADEMIC CITATION REQUIREMENT
+ACADEMIC CITATION
 ================================================================================
 
-If you use this parser in academic research or publications, please cite:
+If you use this parser in research, please cite:
 
 @software{coptic_dependency_parser_2024,
   title={Coptic Dependency Parser},
@@ -132,34 +73,7 @@ If you use this parser in academic research or publications, please cite:
   license={CC BY-NC-SA 4.0}
 }
 
-And also cite the foundational resources (see CREDITS_AND_ATTRIBUTION.md).
-
-================================================================================
-DEPENDENCY LICENSES SUMMARY
-================================================================================
-
-Key dependencies and their licenses:
-
-Stanford Stanza          Apache License 2.0
-DiaParser               Apache License 2.0
-PyTorch                 BSD 3-Clause License
-Gradio                  Apache License 2.0
-NumPy                   BSD 3-Clause License
-Pandas                  BSD 3-Clause License
-Matplotlib              PSF-based License
-Scikit-learn            BSD 3-Clause License
-Coptic SCRIPTORIUM      Various (see data/ directory)
-
-For complete license texts of all dependencies, see the LICENSES/ directory.
-
-================================================================================
-CONTACT FOR COMMERCIAL LICENSING
-================================================================================
-
-If you are interested in using this parser for commercial purposes, please
-contact the author through GitHub to discuss alternative licensing arrangements.
-
-GitHub: https://github.com/Rogaton/coptic-dependency-parser/issues
+See CREDITS_AND_ATTRIBUTION.md for citations of foundational resources.
 
 ================================================================================
 DISCLAIMER
@@ -172,12 +86,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-================================================================================
-FULL LICENSE TEXT
-================================================================================
-
-For the complete CC BY-NC-SA 4.0 license text, visit:
-https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-
-================================================================================
