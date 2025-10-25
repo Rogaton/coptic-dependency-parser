@@ -40,3 +40,12 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Credentials and tokens (NEVER commit these!)
+*token*
+*secret*
+*credential*
+.env
+.env.*
+*.pem
+*.key
