@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Output files
+coptic_dependency_analysis.html
+*.png
+
+# Model files (users download these via Stanza)
+saved_models/
+*.pt
+*.diaparser
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak

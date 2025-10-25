@@ -1,0 +1,31 @@
+# Requirements for Hugging Face Space
+# Minimal dependencies for web deployment
+
+# Web Interface
+gradio>=4.0.0
+
+# Core NLP Tools
+stanza>=1.5.0
+diaparser>=1.1.0
+torch>=2.0.0
+transformers>=4.30.0
+
+# Scientific Computing
+numpy>=1.20.0,<2.4.0
+scipy>=1.7.0
+pandas>=2.0.0
+
+# Machine Learning Support
+scikit-learn>=1.0.0
+joblib>=1.0.0
+xgboost<2.0.0
+
+# NLP Support Libraries
+flair>=0.13.0
+conllu>=4.5.0
+emoji>=2.0.0
+
+# Utilities
+tqdm>=4.65.0
+protobuf>=3.20.0
+sentencepiece>=0.1.99
