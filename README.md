@@ -6,7 +6,7 @@ Neural dependency parser for Coptic text with tokenization, POS tagging, lemmati
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![Stanza](https://img.shields.io/badge/Stanza-NLP-green.svg)](https://stanfordnlp.github.io/stanza/)
 
-> **Try it online:** [Coptic Parser Web Demo](https://huggingface.co/spaces/Rogaton/coptic-dependency-parser) (no installation required)
+> **Try it online:** [Coptic Parser Web Demo](https://huggingface.co/spaces/Norelad/coptic-dependency-parser) (no installation required)
 
 ---
 
@@ -121,7 +121,7 @@ python3 coptic-parser-simple-wrapper.py
 
 For quick testing without installation, use the online demo:
 
-🔗 **[Try the Hugging Face Space](https://huggingface.co/spaces/Rogaton/coptic-dependency-parser)**
+🔗 **[Try the Hugging Face Space](https://huggingface.co/spaces/Norelad/coptic-dependency-parser)**
 
 ---
 
