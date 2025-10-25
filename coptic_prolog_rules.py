@@ -132,6 +132,10 @@ class CopticPrologRules:
         # Validate modifier relationships
         self.prolog.assertz("valid_modifier(Head, Modifier, ModPOS) :- member(ModPOS, ['ADJ', 'ADV', 'DET'])")
 
+        # Validate punctuation assignments - content words should NOT be punct
+        # Only actual punctuation marks (PUNCT POS tag) should have punct relation
+        self.prolog.assertz("invalid_punct(Word, POS, Relation) :- Relation = 'punct', member(POS, ['VERB', 'NOUN', 'PRON', 'PROPN', 'DET', 'ADJ', 'ADV', 'AUX', 'NUM'])")
+
         # ===================================================================
         # MORPHOLOGICAL ANALYSIS RULES
         # ===================================================================
@@ -188,6 +192,14 @@ class CopticPrologRules:
                     result["warnings"].append(
                         f"Unusual det-noun: {dep_word} → {head_word}"
                     )
+
+            # Check for incorrect punctuation assignments
+            query = f"invalid_punct('{dep_word}', '{dep_pos}', '{relation}')"
+            query_result = list(self.prolog.query(query))
+            if query_result:
+                result["warnings"].append(
+                    f"⚠️  PARSER ERROR: '{dep_word}' ({dep_pos}) incorrectly labeled as 'punct' - should be a content relation"
+                )
 
             return result
 
