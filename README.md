@@ -160,7 +160,6 @@ Results can be:
 
 - **[Quick Start Guide](QUICK_START.md)**: Fast setup and common workflows
 - **[Troubleshooting](TROUBLESHOOTING.md)**: Solutions to common issues
-- **[Contributing](CONTRIBUTING.md)**: How to contribute to the project
 - **[Credits & Attribution](CREDITS_AND_ATTRIBUTION.md)**: Acknowledgments and citations
 
 ---
@@ -322,12 +321,7 @@ See the [LICENSES/](LICENSES/) directory for complete license texts and [LICENSE
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
-
-- How to report bugs
-- How to suggest features
-- Code contribution guidelines
-- Testing procedures
+Contributions are welcome! Please report bugs, suggest features, or submit pull requests via [GitHub Issues](https://github.com/Rogaton/coptic-dependency-parser/issues).
 
 ---
 
@@ -368,8 +362,6 @@ Special thanks to:
 **Active Development** - Regular updates and maintenance
 
 Latest release: Version 1.1 (2024)
-
-See [SUMMARY_VERSION_1.1.md](SUMMARY_VERSION_1.1.md) for recent changes.
 
 ---
 
