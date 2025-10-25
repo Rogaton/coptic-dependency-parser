@@ -170,6 +170,10 @@ class CopticPrologRules:
         # Suggest correct relation for ADV (adverb)
         self.prolog.assertz("suggest_correction('ADV', _, 'advmod')")       # Adverbial modifier
 
+        # Suggest correct relation for NUM (number)
+        self.prolog.assertz("suggest_correction('NUM', 'NOUN', 'nummod')") # Number modifying noun
+        self.prolog.assertz("suggest_correction('NUM', _, 'obl')")         # Default for number (temporal/oblique)
+
         # ===================================================================
         # MORPHOLOGICAL ANALYSIS RULES
         # ===================================================================
