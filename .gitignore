@@ -1,0 +1,209 @@
+# ====================================================================
+# EXTERNAL DATA (NOT INCLUDED - Awaiting Permissions)
+# ====================================================================
+# CopticScriptorium training data
+data/depparse/*.conllu
+data/tokenize/*.conllu
+data/tokenize/*.txt
+data/tokenize/*.toklabels
+data/lexicon/corpus/*.json
+data/lexicon/corpus/*.csv
+
+# External models
+stanza_resources/
+.stanza_resources/
+
+# Demo files with external data
+demo/*.conllu.txt
+
+# Backup of external data (local development only)
+../external_data_backup/
+
+# Original versions of refactored files
+*.backup
+
+# ====================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+
+# Virtual Environments
+.venv/
+.venv-old-root/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Output files
+coptic_dependency_analysis.html
+coptic_dependency_analysis.pdf
+*.png
+
+# Model files (users download these via Stanza or obtain separately)
+# See MODELS.md for setup instructions
+saved_models/
+models/*.diaparser
+models/*.marmot
+models/*.xrm
+models/*.pt
+*.pt
+*.diaparser
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Credentials and tokens (NEVER commit these!)
+*token*
+*secret*
+*credential*
+.env
+.env.*
+*.pem
+*.key
+
+# Unrelated projects and backups
+os-webrtc-janus-docker/
+github/
+
+# Benchmark outputs (regenerable - don't commit)
+benchmark_results_*.json
+*_cpu_*.json
+*_gpu_*.json
+benchmark_summary.txt
+benchmark_tables.md
+benchmark_results/
+
+# ====================================================================
+# TEST FILES AND DEVELOPMENT SCRIPTS (NOT FOR PRODUCTION)
+# ====================================================================
+test_*.py
+debug_*.py
+fix_*.py
+check_*.py
+diagnose_*.py
+benchmark_*.py
+analyze_*.py
+visualize_*.py
+run_*.sh
+
+# Alternative implementations (keep only main coptic-parser.py)
+coptic_parser_pure.py
+coptic_hybrid_diaparser.py
+coptic_prolog_rules_dual.py
+coptic_prolog_rules_janus.py
+coptic-parser-simple-wrapper.py
+app.py
+app.py.backup
+
+# Training scripts (not needed for end users)
+train_*.py
+patch_*.py
+split_data.py
+extract_*.py
+generate_*.py
+
+# Tools and utilities (development only)
+kasser_transcription_tool.py
+coptic_ocr_tool.py
+transcription_helper.sh
+use_pretrained_model.sh
+
+# ====================================================================
+# DOCUMENTATION OVERLOAD (Keep only essential docs)
+# ====================================================================
+ACTION_PLAN.md
+ADAPTATION_ROADMAP.md
+ANSWER_PNG_TO_TEXT.md
+BENCHMARKING_SUITE_COMPLETE.md
+BENCHMARK_QUICK_START.md
+COPTICSCRIPTORIUM_BENCHMARK_FRAMEWORK.md
+ENHANCEMENTS_SUMMARY.txt
+EXTRACTION_GUIDE.md
+FINAL_STATUS.md
+FIX_SUMMARY.md
+FIX_UNK_TOKENS.md
+JANUS_MIGRATION_ROADMAP.md
+KASSER_LEXICON_DIGITIZATION_GUIDE.md
+KASSER_QUICKSTART.md
+OCR_SETUP_GUIDE.md
+RESEARCH_LANDSCAPE_ANALYSIS.md
+SETUP_PROLOG_JANUS.md
+STATUS_SUMMARY.md
+SWITCH_TO_JANUS.md
+TRAINING_DECISION_GUIDE.md
+TRAINING_RESULTS_TEMPLATE.md
+TRAINING_STATUS.md
+TRAINING_TIME_ESTIMATE.md
+UNK_TOKEN_FIX.md
+QUICK_START.txt
+
+# ====================================================================
+# BACKUP DIRECTORIES AND OLD CODE
+# ====================================================================
+BKP/
+coptic-parser2/
+gui/
+scripts/
+utils/
+core/
+tagger-part-of-speech/
+tests/
+benchmarks/
+
+# ====================================================================
+# SAMPLE/TEST DATA FILES
+# ====================================================================
+acta_pilati_full.txt
+all_data.conllu
+page_7_test_ocr.txt
+text-analysis-output
+kasser_*.json
+kasser_*.csv
+RKlexicon-transcript
+
+# Alternative/extracted lexicons (keep only coptic_lexicon.pl)
+coptic_lexicon_extracted.pl
+coptic_lexicon_kasser_pilot.pl
+
+# Alternative Prolog implementations
+coptic_dependency_rules.pl
+coptic_parser_master.pl
+
+# Generated visualization/analysis outputs
+Lords-Prayer-coptic_dependency_analysis.pdf
+component_breakdown.png
+latency_distribution.png
+memory_usage.png
+percentile_comparison.png
+throughput_comparison.png
+
+# Alternative requirements files
+requirements-full.txt
+requirements_hf_space.txt
+packages.txt
+
+# Miscellaneous
+coptic_keyboard.html
+setup.py
