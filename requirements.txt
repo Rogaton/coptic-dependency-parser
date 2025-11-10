@@ -1,14 +1,30 @@
-# Coptic Dependency Parser - Standalone Version Requirements
-# This version does NOT include external NLP dependencies
+# Coptic Dependency Parser - Requirements
+#
+# All dependencies needed to run the Coptic Dependency Parser
+# Licensed under open-source licenses (Apache 2.0, MIT, BSD, GPL)
 
 # ====================================================================
-# CORE DEPENDENCIES (Original Code)
+# CORE NLP DEPENDENCIES
 # ====================================================================
 
-# Web Interface (for Gradio GUI)
-gradio>=4.0.0
+# Stanford NLP Library for Coptic tokenization, POS tagging, and lemmatization
+# License: Apache 2.0
+stanza>=1.5.0
 
-# Prolog Interface (for original Prolog validation system)
+# DiaParser - Biaffine dependency parser
+# License: Apache 2.0
+diaparser>=1.1.0
+
+# PyTorch - Required by Stanza and DiaParser
+# License: BSD 3-Clause
+torch>=2.0.0
+
+# ====================================================================
+# CORE DEPENDENCIES
+# ====================================================================
+
+# Prolog Interface (for grammatical validation)
+# License: BSD 2-Clause
 pyswip>=0.2.10
 
 # ====================================================================
@@ -16,44 +32,21 @@ pyswip>=0.2.10
 # ====================================================================
 
 # For dependency tree visualization and plots
+# License: PSF (compatible with most uses)
 matplotlib>=3.5.0
 
 # Scientific computing (used by visualization)
+# License: BSD 3-Clause
 numpy>=1.20.0,<2.4.0
 
 # Data manipulation (for benchmarking and analysis)
+# License: BSD 3-Clause
 pandas>=2.0.0
 
 # PDF Export functionality
+# License: BSD 3-Clause
 weasyprint>=60.0
 
 # Progress bars
+# License: MIT/MPL 2.0
 tqdm>=4.65.0
-
-# ====================================================================
-# EXTERNAL NLP DEPENDENCIES - NOT INCLUDED
-# ====================================================================
-# The following dependencies require external permissions and have been
-# removed from this standalone version:
-#
-# REMOVED:
-# - stanza>=1.5.0              # Stanford NLP (requires permission)
-# - diaparser>=1.1.0            # University of Pisa (requires permission)
-# - torch>=2.0.0                # PyTorch (dependency of above)
-# - transformers>=4.30.0        # Transformers (dependency of above)
-# - flair>=0.13.0               # Flair NLP (optional dependency)
-# - sentencepiece>=0.1.99       # Tokenization (dependency of above)
-# - protobuf>=3.20.0            # Protocol buffers (dependency of above)
-# - scikit-learn>=1.0.0         # ML library (optional)
-# - joblib>=1.0.0               # ML utilities (optional)
-# - xgboost<2.0.0               # ML library (optional)
-# - conllu>=4.5.0               # CoNLL-U format (optional)
-# - scipy>=1.7.0                # Scientific computing (optional)
-# - emoji>=2.0.0                # Emoji support (optional)
-#
-# To add these dependencies once permissions are obtained:
-# 1. See requirements-full.txt for the complete list
-# 2. Create appropriate plugins (see PLUGIN_GUIDE.md)
-# 3. Register plugins with the PluginManager
-#
-# ====================================================================

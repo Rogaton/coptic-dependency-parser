@@ -217,6 +217,177 @@ dependency_pattern(coordination,
     CIdx < C2Idx.
 
 %******************************************************************************
+% LAYTON GRAMMAR PATTERNS
+%******************************************************************************
+
+% Pattern 9: Perfective Conjugation (Layton Lesson 8, §58-60)
+% Example: ⲁϥⲃⲱⲕ (a-f-bwk = "he went")
+% Structure: Conjugation base (ⲁ) + Subject pronoun (ϥ) + Infinitive (ⲃⲱⲕ)
+%
+% Dependency:
+%   ⲃⲱⲕ (VERB, root)
+%   ├── ⲁ (AUX, aux) - perfective marker
+%   └── ϥ (PRON, nsubj) - subject pronoun
+%
+dependency_pattern(perfective,
+    Words,
+    [dep(Aux, 'AUX', AIdx, Verb, VIdx, aux),
+     dep(Pron, 'PRON', PIdx, Verb, VIdx, nsubj)]) :-
+    % Auxiliary (perfective marker ⲁ)
+    nth1(AIdx, Words, word(Aux, 'AUX', _)),
+    member(Aux, ['ⲁ', 'ⲙⲡ']),  % ⲁ (affirmative), ⲙⲡ (negative)
+
+    % Pronominal subject
+    nth1(PIdx, Words, word(Pron, 'PRON', _)),
+    member(Pron, ['ⲓ', 'ⲕ', 'ⲧⲉ', 'ϥ', 'ⲥ', 'ⲛ', 'ⲧⲛ', 'ⲩ']),
+
+    % Verb (infinitive)
+    nth1(VIdx, Words, word(Verb, 'VERB', _)),
+
+    % Order: AUX < PRON < VERB (ⲁ-ϥ-ⲃⲱⲕ)
+    AIdx < PIdx,
+    PIdx < VIdx.
+
+% Pattern 10: Imperative (Layton Lesson 11, §91-97)
+% Example: ⲁⲣⲓⲕⲃⲱⲕ (arik-bwk = "Go!" to you masc.sing)
+% Structure: Imperative marker (ⲁⲣⲓⲕ) + Infinitive (ⲃⲱⲕ)
+%
+% Dependency:
+%   ⲃⲱⲕ (VERB, root)
+%   └── ⲁⲣⲓⲕ (AUX, aux) - imperative marker
+%
+dependency_pattern(imperative,
+    Words,
+    [dep(ImpMarker, 'AUX', IIdx, Verb, VIdx, aux)]) :-
+    % Imperative marker
+    nth1(IIdx, Words, word(ImpMarker, 'AUX', _)),
+    member(ImpMarker, ['ⲁⲣⲓⲕ', 'ⲁⲣⲓⲧⲉ', 'ⲁⲣⲓⲧⲛ', 'ⲙⲡⲣⲕ', 'ⲙⲡⲣⲧⲉ', 'ⲙⲡⲣⲧⲛ']),
+    % ⲁⲣⲓ- (affirmative), ⲙⲡⲣ- (negative)
+
+    % Verb (infinitive)
+    nth1(VIdx, Words, word(Verb, 'VERB', _)),
+
+    % Order: IMP < VERB
+    IIdx < VIdx.
+
+% Pattern 11: Causative (Layton Lesson 13, §111-114) - DISABLED
+%
+% TODO: Requires proper xcomp analysis per UD guidelines (COPTIC_UD_ALIGNMENT.md:239-256)
+%
+% Example: ⲧⲣⲉϥⲙⲟⲩ (tre-f-mu = "cause him to die" = "kill him")
+% Structure: Causative marker (ⲧⲣⲉ) + Pronoun (ϥ) + Infinitive (ⲙⲟⲩ)
+%
+% ISSUE: UD guidelines show causative should use xcomp, not aux:
+%   Correct structure:
+%   ⲧⲣⲉ (VERB, root or xcomp)
+%   ├── ϥ (nsubj, causee - needs clarification)
+%   └── ⲙⲟⲩ (xcomp, caused action)
+%
+% Current implementation below uses aux (incorrect). Requires full analysis of
+% Layton §111-114 to determine correct attachment points and whether ⲧⲣⲉ is root/xcomp.
+%
+% Disabled until proper implementation:
+%
+% dependency_pattern(causative,
+%     Words,
+%     [dep(CausMarker, 'AUX', CIdx, Verb, VIdx, aux),
+%      dep(Pron, 'PRON', PIdx, Verb, VIdx, nsubj)]) :-
+%     nth1(CIdx, Words, word(CausMarker, 'AUX', _)),
+%     atom_concat('ⲧⲣⲉ', _, CausMarker),
+%     nth1(PIdx, Words, word(Pron, 'PRON', _)),
+%     nth1(VIdx, Words, word(Verb, 'VERB', _)),
+%     CIdx < PIdx,
+%     PIdx < VIdx.
+%
+% dependency_pattern(causative_fused,
+%     Words,
+%     [dep(CausPron, 'AUX', CPIdx, Verb, VIdx, aux)]) :-
+%     nth1(CPIdx, Words, word(CausPron, 'AUX', _)),
+%     member(CausPron, ['ⲧⲣⲁ', 'ⲧⲣⲉⲕ', 'ⲧⲣⲉϥ', 'ⲧⲣⲉⲥ', 'ⲧⲣⲉⲛ', 'ⲧⲣⲉⲧⲛ', 'ⲧⲣⲉⲩ']),
+%     nth1(VIdx, Words, word(Verb, 'VERB', _)),
+%     CPIdx < VIdx.
+
+% Pattern 12: Circumstantial (Layton Lesson 15, §120)
+% Example: ⲉϥⲥⲱⲧⲙ (e-f-swtm = "when/while he hears")
+% Structure: Circumstantial converter (ⲉ) + Pronoun (ϥ) + Infinitive (ⲥⲱⲧⲙ)
+%
+% Dependency:
+%   ⲥⲱⲧⲙ (VERB, root of subordinate clause)
+%   ├── ⲉ (SCONJ, mark) - circumstantial converter
+%   └── ϥ (PRON, nsubj)
+%
+dependency_pattern(circumstantial,
+    Words,
+    [dep(Conv, 'SCONJ', CIdx, Verb, VIdx, mark),
+     dep(Pron, 'PRON', PIdx, Verb, VIdx, nsubj)]) :-
+    % Circumstantial converter
+    nth1(CIdx, Words, word(Conv, 'SCONJ', _)),
+    member(Conv, ['ⲉ', 'ⲉⲣⲉ']),  % ⲉ- with pronoun, ⲉⲣⲉ- with noun
+
+    % Pronominal subject
+    nth1(PIdx, Words, word(Pron, 'PRON', _)),
+
+    % Verb
+    nth1(VIdx, Words, word(Verb, 'VERB', _)),
+
+    % Order: CONV < PRON < VERB
+    CIdx < PIdx,
+    PIdx < VIdx.
+
+% Pattern 13: Second Tense / Focalizing (Layton Lesson 18, §143-145)
+% Example: ⲛⲧⲁϥⲉⲓ (nta-f-ei = "it was that he came")
+% Structure: Focalizing marker (ⲛⲧⲁ) + Pronoun (ϥ) + Infinitive (ⲉⲓ)
+%
+% Dependency:
+%   ⲉⲓ (VERB, root)
+%   ├── ⲛⲧⲁ (AUX, aux) - focalizing marker
+%   └── ϥ (PRON, nsubj)
+%
+dependency_pattern(focalizing,
+    Words,
+    [dep(Foc, 'AUX', FIdx, Verb, VIdx, aux),
+     dep(Pron, 'PRON', PIdx, Verb, VIdx, nsubj)]) :-
+    % Focalizing marker
+    nth1(FIdx, Words, word(Foc, 'AUX', _)),
+    member(Foc, ['ⲛⲧⲁ', 'ⲛⲧⲉ', 'ⲉⲧ']),  % Second tense markers
+
+    % Pronominal subject
+    nth1(PIdx, Words, word(Pron, 'PRON', _)),
+
+    % Verb
+    nth1(VIdx, Words, word(Verb, 'VERB', _)),
+
+    % Order: FOC < PRON < VERB
+    FIdx < PIdx,
+    PIdx < VIdx.
+
+% Pattern 14: Prepositional Object (ⲙⲙⲟϥ = "him" accusative)
+% Example: ⲁϥⲥⲱⲧⲙ ⲙⲙⲟϥ (a-f-swtm mmo-f = "he heard him")
+% Structure: Prep (ⲙⲙⲟ) + Pronoun (ϥ)
+%
+% Dependency:
+%   ϥ (PRON, obj to verb)
+%   └── ⲙⲙⲟ (ADP, case)
+%
+dependency_pattern(prepositional_object,
+    Words,
+    [dep(Prep, 'ADP', PrepIdx, Pron, PIdx, case),
+     dep(Pron, 'PRON', PIdx, Verb, VIdx, obj)]) :-
+    % Verb
+    nth1(VIdx, Words, word(Verb, 'VERB', _)),
+
+    % Preposition (object marker)
+    nth1(PrepIdx, Words, word(Prep, 'ADP', _)),
+    member(Prep, ['ⲙⲙⲟ', 'ⲛⲁ', 'ⲉⲣⲟ', 'ϩⲁⲣⲟ']),
+
+    % Pronominal object
+    nth1(PIdx, Words, word(Pron, 'PRON', _)),
+
+    % Order: VERB < PREP < PRON
+    VIdx < PrepIdx,
+    PrepIdx < PIdx.
+
+%******************************************************************************
 % CONSTRAINT CHECKING
 %******************************************************************************
 

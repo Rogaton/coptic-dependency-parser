@@ -54,6 +54,7 @@ import signal
 import sys
 import atexit
 from coptic_text_normalizer import CopticTextNormalizer
+from coptic_dialect_identifier import create_dialect_identifier
 
 # Fix PyTorch 2.6+ compatibility and __getitems__ error
 import torch
@@ -96,6 +97,9 @@ class CopticParserGUI:
         # Initialize text normalizer for handling combining diacritics
         self.text_normalizer = CopticTextNormalizer(mode='strip')
 
+        # Initialize dialect identifier
+        self.dialect_identifier = create_dialect_identifier()
+
         # Initialize Prolog engine for grammatical validation
         try:
             from coptic_prolog_rules import create_prolog_engine
@@ -106,6 +110,63 @@ class CopticParserGUI:
         except Exception as e:
             print(f"Warning: Prolog integration not available: {e}")
             self.prolog = None
+
+        # Initialize Till-based morphology analyzer
+        try:
+            from coptic_morphology_till import create_morphology_analyzer_till
+            from coptic_dialect_handler import Dialect
+            self.morphology_till = create_morphology_analyzer_till(
+                dialect=Dialect.SAHIDIC,
+                prolog_engine=self.prolog
+            )
+            print("✓ Till morphology analyzer loaded (Sahidic dialect)")
+        except Exception as e:
+            print(f"Warning: Till morphology not available: {e}")
+            self.morphology_till = None
+
+        # Initialize Till pronouns & prepositions analyzer (§122-172)
+        try:
+            from coptic_pronouns_prepositions_till import create_pronouns_prepositions_analyzer_till
+            self.pronouns_preps_till = create_pronouns_prepositions_analyzer_till(
+                dialect=Dialect.SAHIDIC
+            )
+            print("✓ Till pronouns & prepositions analyzer loaded (§122-172)")
+        except Exception as e:
+            print(f"Warning: Till pronouns/prepositions not available: {e}")
+            self.pronouns_preps_till = None
+
+        # Initialize Till articles analyzer (§35-50)
+        try:
+            from coptic_articles_till import create_articles_analyzer_till
+            self.articles_till = create_articles_analyzer_till(
+                dialect=Dialect.SAHIDIC
+            )
+            print("✓ Till articles analyzer loaded (§35-50)")
+        except Exception as e:
+            print(f"Warning: Till articles not available: {e}")
+            self.articles_till = None
+
+        # Initialize Till conjunctions analyzer
+        try:
+            from coptic_conjunctions_till import create_conjunctions_analyzer_till
+            self.conjunctions_till = create_conjunctions_analyzer_till(
+                dialect=Dialect.SAHIDIC
+            )
+            print("✓ Till conjunctions analyzer loaded")
+        except Exception as e:
+            print(f"Warning: Till conjunctions not available: {e}")
+            self.conjunctions_till = None
+
+        # Initialize Till negation analyzer
+        try:
+            from coptic_negation_till import create_negation_analyzer_till
+            self.negation_till = create_negation_analyzer_till(
+                dialect=Dialect.SAHIDIC
+            )
+            print("✓ Till negation analyzer loaded")
+        except Exception as e:
+            print(f"Warning: Till negation not available: {e}")
+            self.negation_till = None
 
         # Coptic alphabet
         self.coptic_chars = [
@@ -309,24 +370,24 @@ Export parsed results in multiple formats:
         x_positions = np.linspace(0.1, 0.9, n_words)
         y_word = 0.3
         
-        # Draw words and POS tags using transliteration
+        # Draw words and POS tags (simple black and white)
         for i, (word, x) in enumerate(zip(words, x_positions)):
             # Use transliteration for display
             display_text = self.transliterate_coptic(word)
-            
-            # Draw word box
-            self.ax.text(x, y_word, display_text, ha='center', va='center', 
-                        fontsize=12, bbox=dict(boxstyle="round,pad=0.4", 
-                                              facecolor="lightblue", edgecolor="blue"))
-            
-            # Draw POS tags
+
+            # Draw word box (simple black on white)
+            self.ax.text(x, y_word, display_text, ha='center', va='center',
+                        fontsize=12, bbox=dict(boxstyle="round,pad=0.4",
+                                              facecolor="white", edgecolor="black", linewidth=1.5))
+
+            # Draw POS tags (simple black text)
             pos_tag = sentence.words[i].upos
-            self.ax.text(x, y_word - 0.12, pos_tag, ha='center', va='center', 
-                        fontsize=10, style='italic', color='darkgreen', weight='bold')
-            
-            # Draw original Coptic text below (smaller)
+            self.ax.text(x, y_word - 0.12, pos_tag, ha='center', va='center',
+                        fontsize=10, style='italic', color='black')
+
+            # Draw original Coptic text below (smaller, simple black)
             self.ax.text(x, y_word - 0.18, f"({word})", ha='center', va='center',
-                        fontsize=8, color='gray')
+                        fontsize=8, color='black')
         
         # Draw dependency arcs
         for i, word in enumerate(sentence.words):
@@ -350,30 +411,30 @@ Export parsed results in multiple formats:
                         # Bezier curve points
                         x_arc = x_child * (1-t) + x_head * t
                         y_arc = y_word + 0.08 + 4 * arc_height * t * (1-t)
-                        
-                        # Draw the arc
-                        self.ax.plot(x_arc, y_arc, 'red', linewidth=2.5)
-                        
-                        # Add arrowhead
+
+                        # Draw the arc (simple black)
+                        self.ax.plot(x_arc, y_arc, 'black', linewidth=2)
+
+                        # Add arrowhead (simple black)
                         arrow_offset = 0.03 if x_child < x_head else -0.03
-                        self.ax.annotate('', xy=(x_head, y_word + 0.08), 
+                        self.ax.annotate('', xy=(x_head, y_word + 0.08),
                                        xytext=(x_head + arrow_offset, y_word + 0.12),
-                                       arrowprops=dict(arrowstyle='->', color='red', lw=2.5))
-                        
-                        # Add relation label
+                                       arrowprops=dict(arrowstyle='->', color='black', lw=2))
+
+                        # Add relation label (simple black on white)
                         label_x = (x_child + x_head) / 2
                         label_y = y_word + 0.08 + arc_height
                         self.ax.text(label_x, label_y, word.deprel, ha='center', va='center',
-                                   fontsize=10, bbox=dict(boxstyle="round,pad=0.3", 
-                                                         facecolor="yellow", edgecolor="orange"),
+                                   fontsize=10, bbox=dict(boxstyle="round,pad=0.3",
+                                                         facecolor="white", edgecolor="black", linewidth=1),
                                    weight='bold')
         
-        # Mark root
+        # Mark root (simple black on white)
         for i, word in enumerate(sentence.words):
             if word.head == 0:  # Root word
                 self.ax.text(x_positions[i], y_word + 0.18, 'ROOT', ha='center', va='center',
-                           fontsize=14, color='red', weight='bold',
-                           bbox=dict(boxstyle="round,pad=0.3", facecolor="pink", edgecolor="red"))
+                           fontsize=14, color='black', weight='bold',
+                           bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="black", linewidth=2))
         
         self.ax.set_xlim(0, 1)
         self.ax.set_ylim(0, 1)
@@ -675,14 +736,69 @@ Export parsed results in multiple formats:
                 # Create word objects for this sentence
                 words = []
                 for word_id, (token, head, deprel, pos, lemma) in enumerate(zip(tokens, heads, deprels, pos_tags, lemmas), start=1):
+                    # Initialize with Stanza data
+                    feats = ''
+                    till_analysis = ''
+
+                    # Enrich with Till morphology & pronouns/prepositions (if available)
+
+                    # First check articles (§35-50)
+                    if self.articles_till and not till_analysis:
+                        article_result = self.articles_till.identify(token)
+                        if article_result:
+                            # article_result is an ArticleForm object
+                            art_type = article_result.article_type  # "definite" or "indefinite"
+                            art_gender = article_result.gender  # "Masc", "Fem", or None
+                            art_number = article_result.number  # "Sing" or "Plur"
+                            art_form = article_result.form_type  # "weak", "complete", "full"
+                            art_source = article_result.source_section  # e.g., "§62"
+                            # Update if it's a definite/indefinite article
+                            if pos in ['DET', 'ART']:
+                                pos = 'DET'
+                                # Build features string
+                                feat_parts = [f"{art_number}"]
+                                if art_gender:
+                                    feat_parts.append(art_gender)
+                                feats = ','.join(feat_parts)
+                                till_analysis = f"[ART:{art_type} {art_source}]"
+
+                    # Then check pronouns/prepositions (§122-172)
+                    if self.pronouns_preps_till and not till_analysis:
+                        # Check if it's a pronoun or preposition
+                        pron_prep_result = self.pronouns_preps_till.identify_form(token)
+                        if pron_prep_result:
+                            pron_lemma, pron_pos, pron_feats, pron_source = pron_prep_result
+                            # Update POS if more specific than Stanza
+                            if pos in ['DET', 'PRON', 'ADP', 'ADV'] or pron_pos in ['PDEM', 'POSS', 'PINT', 'PIND', 'PREP']:
+                                pos = pron_pos
+                                lemma = pron_lemma
+                                feats = '|'.join(f"{k}={v}" for k, v in pron_feats.items())
+                                till_analysis = f"[{pron_source}]"
+
+                    # Finally check Till morphology for verb conjugations
+                    if self.morphology_till and not till_analysis:
+                        # Segment the word to see if it has morphological structure
+                        segments = self.morphology_till.segment_word(token)
+                        if segments and len(segments) > 1:  # Only if it actually segments
+                            # Build feature string from segments
+                            seg_info = []
+                            for seg in segments:
+                                if seg.source_section:
+                                    seg_info.append(f"{seg.form}[{seg.pos}:{seg.source_section}]")
+                                else:
+                                    seg_info.append(f"{seg.form}[{seg.pos}]")
+                            till_analysis = f"{'·'.join(seg_info)}"
+
+                    # Create word object
                     word_obj = type('Word', (), {
                         'id': word_id,
                         'text': token,
-                        'lemma': lemma,  # lemma from Stanza
-                        'upos': pos,     # POS tag from Stanza
+                        'lemma': lemma,  # lemma from Stanza or Till
+                        'upos': pos,     # POS tag from Stanza or Till
                         'head': head,
                         'deprel': deprel,
-                        'feats': ''
+                        'feats': feats,  # Features from Till
+                        'till_analysis': till_analysis  # Full Till analysis for display
                     })()
                     words.append(word_obj)
 
@@ -706,7 +822,10 @@ Export parsed results in multiple formats:
                         head_text = "ROOT"
                     else:
                         head_text = words[word.head-1].text if word.head <= len(words) else "?"
-                    all_results.append(f"  {word.text:15} ({word.upos:6}) --{word.deprel:10}--> {head_text:15}")
+
+                    # Add Till analysis if available
+                    till_info = f"  {word.till_analysis}" if hasattr(word, 'till_analysis') and word.till_analysis else ""
+                    all_results.append(f"  {word.text:15} ({word.upos:6}) --{word.deprel:10}--> {head_text:15}{till_info}")
 
                 all_results.append(f"\nTokens in sentence: {len(words)}")
 
@@ -738,6 +857,18 @@ Export parsed results in multiple formats:
             # Format overall summary
             results = []
             results.append(f"Input text parsed successfully!")
+
+            # Identify dialect
+            detected_dialect, confidence, feature_counts = self.dialect_identifier.identify_dialect(text)
+            results.append(f"\n📖 Detected Dialect: {detected_dialect.full_name} ({detected_dialect.value})")
+            results.append(f"   {self.dialect_identifier.get_dialect_info(detected_dialect)}")
+            results.append(f"   Confidence: {confidence:.1%} - {self.dialect_identifier.get_confidence_description(confidence)}")
+            if len(feature_counts) > 1:
+                # Show other candidates if present
+                sorted_counts = sorted(feature_counts.items(), key=lambda x: x[1], reverse=True)
+                other_dialects = [f"{d.value}:{int(c)}" for d, c in sorted_counts[:3] if d != detected_dialect]
+                if other_dialects:
+                    results.append(f"   Other features detected: {', '.join(other_dialects)}")
 
             # Show normalization info if applied
             if normalization_applied:
