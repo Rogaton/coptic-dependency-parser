@@ -149,6 +149,13 @@ coptic-dependency-parser/
 ├── requirements.txt              # Python dependencies
 ├── LICENSE                       # CC BY-NC-SA 4.0 License
 ├── README.md                     # This file
+├── tools/                        # Evaluation and comparison tools
+│   ├── parser_comparison_tool.py # Compare with CopticScriptorium
+│   └── evaluate_baseline.py     # Baseline performance evaluation
+├── docs/                         # Documentation
+│   └── evaluation/              # Evaluation reports and documentation
+│       ├── CORPUS_COMPARATIVE_ANALYSIS.md
+│       └── COPTICSCRIPTORIUM_README.md
 ├── data/
 │   ├── depparse/                # Training/evaluation data (CoNLL-U format)
 │   ├── lexicon/                 # Lexical resources
@@ -176,6 +183,49 @@ This parser uses linguistic data from:
 - **Coptic Scriptorium** - UD-annotated Coptic corpus for training
 - **Universal Dependencies** - Dependency annotation scheme
 - **Comprehensive Coptic Lexicon** - Extracted morphological information
+
+## 📈 Evaluation & Comparison
+
+### Parser Comparison Tool
+
+Compare the dependency parser with CopticScriptorium's morpheme-level tagger to understand their complementary strengths:
+
+```bash
+# Run comparison on example texts
+python3 tools/parser_comparison_tool.py
+
+# Compare specific text
+python3 tools/parser_comparison_tool.py "ⲁϥⲥⲱⲧⲙ ⲙⲙⲟϥ"
+```
+
+**Key Differences:**
+- **Dependency Parser**: Word-level tokenization, syntactic structure, UD framework
+- **CS Tagger**: Morpheme-level segmentation, TreeTagger format, corpus annotation
+
+Both tools share underlying components (Till analyzers, normalization) but serve different research purposes. See [COPTICSCRIPTORIUM_README.md](docs/evaluation/COPTICSCRIPTORIUM_README.md) for details.
+
+### Performance Metrics
+
+Evaluated across diverse Coptic text genres:
+
+| Corpus Type | Coverage | Characteristics |
+|-------------|----------|-----------------|
+| Documentary Papyri | **95.6%** | Simple, formulaic syntax |
+| Monastic Literature | **93.7%** | Standardized prescriptive language |
+| Biblical Texts | **93.1%** | Translation Greek (Koine → Sahidic) |
+| Literary Texts | **82.4%** | Complex rhetorical structures |
+
+The parser achieves **82-96% coverage** using Till's grammar modules (§35-50 Articles, §292-304 Conjunctions, §309-319 Negations, §245-268 Morphology). See [CORPUS_COMPARATIVE_ANALYSIS.md](docs/evaluation/CORPUS_COMPARATIVE_ANALYSIS.md) for detailed evaluation results.
+
+### Running Baseline Evaluation
+
+```bash
+# Evaluate parser performance on test corpora
+python3 tools/evaluate_baseline.py
+
+# Evaluate on specific corpus files
+python3 tools/evaluate_baseline.py corpus1.txt corpus2.txt
+```
 
 ## 🧪 Technical Details
 
